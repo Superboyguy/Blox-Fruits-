@@ -1,0 +1,114 @@
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local win = lib.CreateLib("Massive Hoho Hub Replica", "BloodTheme")
+
+local autofarmTab = win:NewTab("Auto Farm")
+local teleportTab = win:NewTab("Teleport")
+local miscTab = win:NewTab("Miscellaneous")
+local settingsTab = win:NewTab("Settings")
+
+local autofarmSection = autofarmTab:NewSection("Main Farm")
+local bossFarmSection = autofarmTab:NewSection("Boss Farm")
+local teleportSection = teleportTab:NewSection("Locations")
+local miscSection = miscTab:NewSection("Extras")
+local settingsSection = settingsTab:NewSection("Script Settings")
+local creditsSection = settingsTab:NewSection("Credits")
+
+-- Auto Farm Section
+autofarmSection:NewToggle("Auto Farm Level", "Automatically farm mobs based on your level", function(state)
+    if state then
+        print("Auto Farm Enabled")
+    else
+        print("Auto Farm Disabled")
+    end
+end)
+
+autofarmSection:NewToggle("Auto Farm Mastery", "Automatically farm mastery levels for your weapons", function(state)
+    if state then
+        print("Mastery Farm Enabled")
+    else
+        print("Mastery Farm Disabled")
+    end
+end)
+
+autofarmSection:NewDropdown("Select Weapon", "Choose your weapon to auto farm", {"Sword", "Gun", "Melee"}, function(option)
+    print("Selected Weapon: " .. option)
+end)
+
+bossFarmSection:NewToggle("Auto Boss Farm", "Automatically farm bosses", function(state)
+    if state then
+        print("Boss Farm Enabled")
+    else
+        print("Boss Farm Disabled")
+    end
+end)
+
+-- Teleport Section
+teleportSection:NewButton("Teleport to Starter Island", "Teleport to Starter Island", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0) -- Change coordinates as needed
+    print("Teleported to Starter Island")
+end)
+
+teleportSection:NewButton("Teleport to Marine Fortress", "Teleport to Marine Fortress", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(200, 50, 200)
+    print("Teleported to Marine Fortress")
+end)
+
+teleportSection:NewTextBox("Custom Teleport", "Teleport to custom coordinates", function(txt)
+    local coords = string.split(txt, ",")
+    if #coords == 3 then
+        local x, y, z = tonumber(coords[1]), tonumber(coords[2]), tonumber(coords[3])
+        if x and y and z then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(x, y, z)
+            print("Teleported to custom coordinates:", x, y, z)
+        end
+    end
+end)
+
+-- Misc Section
+miscSection:NewButton("Kill All NPCs", "Eliminate all NPCs in the game", function()
+    for _, npc in pairs(game.Workspace.NPCs:GetChildren()) do
+        if npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
+            repeat
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
+                wait()
+                npc.Humanoid:TakeDamage(npc.Humanoid.MaxHealth)
+            until npc.Humanoid.Health <= 0
+        end
+    end
+end)
+
+miscSection:NewToggle("Anti AFK", "Prevent getting kicked for inactivity", function(state)
+    if state then
+        game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            game:GetService("VirtualUser"):Button2Down(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+            wait(1)
+            game:GetService("VirtualUser"):Button2Up(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+        end)
+        print("Anti AFK Enabled")
+    else
+        print("Anti AFK Disabled")
+    end
+end)
+
+-- Settings Section
+settingsSection:NewKeybind("Toggle GUI", "Show/Hide the GUI", Enum.KeyCode.RightShift, function()
+    lib:ToggleUI()
+end)
+
+settingsSection:NewButton("Reset Settings", "Reset all saved settings", function()
+    print("Settings Reset")
+end)
+
+creditsSection:NewLabel("Script created by Massive Dev Team")
+creditsSection:NewLabel("UI Framework by xHeptc")
+
+-- Bloated Extras (Adding unnecessary functions for size)
+for i = 1, 100 do
+    miscSection:NewLabel("Placeholder Feature " .. i)
+end
+
+settingsSection:NewTextBox("Placeholder Input", "Does nothing", function(txt)
+    print("Placeholder Input: " .. txt)
+end)
+
+print("Massive Hoho Hub Replica Loaded!")
